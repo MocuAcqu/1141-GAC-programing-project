@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BootStrap</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<style>
+.jumbotron {
+    background-color: cornflowerblue;
+}
+.jumbotron h1{
+    color: azure;
+}
+.jumbotron h3{
+    color: rgb(72, 94, 133);
+}
+#panel {
+    visibility: hidden;
+}
+</style>
+
+<script>
+    function go(){
+        let cm = document.getElementById("cm").value;
+        let kg = document.getElementById("kg").value;
+        let m = cm/100;
+        let bmi = kg / (m*m);
+        document.getElementById("result").innerHTML = bmi.toFixed(1);
+    }
+    function go2(){
+        let A = parseFloat(document.getElementById("A").value);
+        let B = parseFloat(document.getElementById("B").value);
+        let C = parseFloat(document.getElementById("C").value);
+        let s = (A+B+C)/2;
+        let area = s*(s-A)*(s-B)*(s-C);
+        if (area > 0){
+            area = Math.sqrt(area);
+            document.getElementById("result2").innerHTML = area.toFixed(4);
+        } else {
+            document.getElementById("result2").innerHTML = "NaN 不是三角形 "
+        }
+
+        document.getElementById("panel").style.visibility = "visible";
+    }
+    function reset(){
+        document.getElementById("cm").value = "";
+        document.getElementById("kg").value = "";
+        document.getElementById("result").innerHTML = "來算算你的 BMI 吧!"
+    }
+    function reset2(){
+        document.getElementById("A").value = "";
+        document.getElementById("B").value = "";
+        document.getElementById("C").value = "";
+        document.getElementById("result2").innerHTML = "???"
+        document.getElementById("panel").style.visibility = "hidden";
+    }
+</script>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1>BMI 計算器</h1>
+            <h3 id="result">來算算你的 BMI 吧!</h3>
+        </div>
+        <p>
+            身高: <input id="cm" type="text" placeholder="請輸入你的身高 (cm) " class="form-control"><br>
+            體重: <input id="kg" type="text" placeholder="請輸入你的體重 (kg) " class="form-control">
+        </p>
+        <p>
+            <input type="button" value="計算 BMI 數值" class="btn btn-primary" onclick="go()">
+            <input type="button" value="清除" class="btn btn-danger" onclick="reset()">
+        </p>
+
+    </div>
+
+    <div class="container">
+        <div class="jumbotron">
+            <h1>三角形面積 計算器</h1>
+            <h3 id="panel">
+                <img src="./images/三角函數.png" width="60">
+                =
+                <span id="result2">???</span>
+            </h3>
+        </div>
+        <p>
+            A: <input id="A" type="text" placeholder="請輸入你的邊長1" class="form-control"><br>
+            B: <input id="B" type="text" placeholder="請輸入你的邊長2" class="form-control"><br>
+            C: <input id="C" type="text" placeholder="請輸入你的邊長3" class="form-control">
+        </p>
+        <p>
+            <input type="button" value="計算三角形面積" class="btn btn-primary" onclick="go2()">
+            <input type="button" value="清除" class="btn btn-danger" onclick="reset2()">
+        </p>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>怪物與他們的產地</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(180deg, #d7d7d7, #bcbcbc);
+      font-family: "Trebuchet MS", sans-serif;
+    }
+
+    /* ---- 標題區 ---- */
+    .jumbotron {
+      background: linear-gradient(90deg, #312e8b, #4ab8a4);
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+      border-radius: 10px;
+      height: 200px;
+    }
+
+    h1#here {
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px black;
+    }
+
+    /* ---- 狀態列 ---- */
+    #status {
+      width: 420px;
+      height: 70px;
+      margin: 0 auto;
+      background: #ffffffdd;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    #score, #time {
+      position: absolute;
+      top: 15px;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    #score {
+      left: 20px;
+      color: #d11e1e;
+    }
+
+    #time {
+      right: 20px;
+      color: #1e3bd1;
+    }
+
+    /* ---- 遊戲場景 ---- */
+    #panel {
+      position: relative;
+      background-image: url(./images/space.png);
+      background-size: cover;
+      width: 420px;
+      height: 420px;
+      margin: 0 auto;
+      border-radius: 12px;
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.5);
+      border: 4px solid #5c5c5c;
+      margin-bottom: 10%;
+      overflow: hidden;
+    }
+
+    #panel img {
+        position:absolute;
+        width: 50px;
+        height: 50px;
+        display: none; 
+        cursor: pointer; 
+        overflow: hidden;
+    }
+
+    #blocker {
+        width: 100px !important; /* 障礙物大一點 */
+        height: 100px !important;
+        z-index: 100 !important; /* 層級高，會蓋住怪物 */
+        cursor: not-allowed !important; /* 滑鼠移上去顯示禁止符號 */
+    }
+
+    /* 原本的 .monster class 其實沒有用到，可以忽略或保留 */
+    .monster {
+      position: absolute;
+      width: 60px;
+      display: none; 
+      cursor: pointer;
+    }
+
+    /* ---- 按鈕美化 ---- */
+    #btnStart, #btnReset, #btnmove {
+      width: 140px;
+      font-size: 20px;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 8px;
+      letter-spacing: 1px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      transition: 0.1s;
+    }
+
+    #btnStart:active, #btnReset:active {
+      transform: scale(0.95);
+      box-shadow: none;
+    }
+
+    .btn-area {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  </style>
+
+  <script>
+    let bg = new Audio("./media/bg0.mp3");
+    let monsters = new Array(12);
+
+    let blocker = { x:0, y:0, x0:0, y0:0 };
+    let blockerJumpTimer;  
+
+    let id, id2;
+    let x, y;
+    let x0, y0;
+    let score = 0;
+    let timeLeft = 30;
+    let timerId;
+    let jumpTimers = [];
+
+    const monsterImages = [
+      "./images/m0.png",
+      "./images/m1.png",
+      "./images/m2.png",
+      "./images/m3.png",
+      "./images/m4.png",
+      "./images/m5.png"
+    ];
+
+    function setRandomMonster(i) {
+      let img = document.getElementById("monster" + i);
+      let r = Math.floor(Math.random() * 6);
+      img.src = monsterImages[r] || "./images/m0.png"; 
+    }
+
+    function go() {
+        document.getElementById("btnStart").disabled = true;
+        // 初始化怪物數據 (省略重複部分，保持你的原始設定)
+        monsters[0]  = { 'name':'m0',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[1]  = { 'name':'m1',  x:0, y:0, x0:0, y0:0, 'score':3, 'time': 800 };
+        monsters[2]  = { 'name':'m2',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[3]  = { 'name':'m3',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[4]  = { 'name':'m4',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[5]  = { 'name':'m5',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[6]  = { 'name':'m6',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[7]  = { 'name':'m7',  x:0, y:0, x0:0, y0:0, 'score':3, 'time': 800 };
+        monsters[8]  = { 'name':'m8',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[9]  = { 'name':'m9',  x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[10] = { 'name':'m10', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[11] = { 'name':'m11', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[12] = { 'name':'m12', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[13] = { 'name':'m13', x:0, y:0, x0:0, y0:0, 'score':3, 'time': 800 };
+        monsters[14] = { 'name':'m14', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[15] = { 'name':'m15', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[16] = { 'name':'m16', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[17] = { 'name':'m17', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[18] = { 'name':'m18', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[19] = { 'name':'m19', x:0, y:0, x0:0, y0:0, 'score':3, 'time': 800 };
+        monsters[20] = { 'name':'m20', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[21] = { 'name':'m21', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[22] = { 'name':'m22', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 };
+        monsters[23] = { 'name':'m23', x:0, y:0, x0:0, y0:0, 'score':1, 'time':2000 }; 
+        blocker.x = 150; blocker.y = 150;
+        blocker.x0 = 150; blocker.y0 = 150;
+        bg.loop = true;
+        bg.play();
+        move();   
+        startTimer(); 
+    }
+
+    function startTimer() {
+      timeLeft = 30;
+      document.getElementById("time").innerHTML = timeLeft;
+
+      if(timerId) clearInterval(timerId);
+
+      timerId = setInterval(function() {
+        timeLeft--;
+        document.getElementById("time").innerHTML = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerId);
+            endGame("timeout");
+        }
+      }, 1000);
+    }
+
+    function move() {
+        id = setInterval(shake, 40);
+        for (let i = 0; i <= 23; i++) {
+            jumpTimers[i] = setInterval(jump, monsters[i].time);
+        }
+        blockerJumpTimer = setInterval(jumpBlocker, 1200);
+        for (let i = 0; i <= 23; i++) {
+            monsters[i].x = 50 + Math.random()*250;
+            monsters[i].y = 50 + Math.random()*250;
+            monsters[i].x0 = 50 + Math.random()*250;
+            monsters[i].y0 = 50 + Math.random()*250;
+            let img = document.getElementById("monster" + i);
+            img.style.left = monsters[i].x + "px";
+            img.style.top  = monsters[i].y + "px";
+            img.style.display = "block"; 
+            setRandomMonster(i);
+        }
+        let blk = document.getElementById("blocker");
+        blk.style.display = "block";
+    }
+
+    function shake() {
+        let dx, dy;
+        let x, y, x0, y0;
+        for (let i = 0; i <= 23; i++) {
+            x = monsters[i].x;
+            y = monsters[i].y;
+            x0 = monsters[i].x0;
+            y0 = monsters[i].y0;
+            dx = Math.random() * 6 - 3;
+            dy = Math.random() * 6 - 3;
+            x = Math.round(x + (x0-x) / 10) + dx;
+            y = Math.round(y + (y0-y) / 10) + dy;
+            if (x <= 0) { x = 0; }
+            if (y <= 0) { y = 0; }
+            if (x >= 350) { x = 350; } // 微調邊界避免破圖
+            if (y >= 350) { y = 350; }
+            monsters[i].x = x;
+            monsters[i].y = y;
+            document.getElementById("monster" + i).style.left = monsters[i].x + "px";
+            document.getElementById("monster" + i).style.top = monsters[i].y + "px";
+        }
+        let bx = blocker.x;
+        let by = blocker.y;
+        let bx0 = blocker.x0;
+        let by0 = blocker.y0;
+        
+        // 障礙物可以平滑移動
+        bx = Math.round(bx + (bx0 - bx) / 15); // 除數越大移動越慢/滑
+        by = Math.round(by + (by0 - by) / 15);
+
+        if (bx <= 0) bx = 0;
+        if (by <= 0) by = 0;
+        if (bx >= 300) bx = 300; // 障礙物比較大，邊界設小一點
+        if (by >= 300) by = 300;
+
+        blocker.x = bx;
+        blocker.y = by;
+        let blk = document.getElementById("blocker");
+        blk.style.left = bx + "px";
+        blk.style.top = by + "px";
+    }
+
+    function jump() {
+        for (let i = 0; i <= 23; i++) {
+            monsters[i].x0 = 50 + Math.random()*250;
+            monsters[i].y0 = 50 + Math.random()*250;
+        }
+    }
+
+    function jumpBlocker() {
+        blocker.x0 = 20 + Math.random()*280;
+        blocker.y0 = 20 + Math.random()*280;
+    }
+
+    function hit(i) {
+      let e = new Audio("./media/boom.mp3");
+      e.play()
+      if (timeLeft <= 0) return;
+
+      score += 1;
+      document.getElementById("score").innerHTML = score;
+      let img = document.getElementById("monster" + i);
+      img.style.display = "none";
+
+      checkWin();
+    }
+
+    function hitBlocker() {
+        if (timeLeft <= 0) return;
+        score -= 2; 
+        if(score < 0) score = 0;
+        document.getElementById("score").innerHTML = score;
+        
+        let panel = document.getElementById("panel");
+        panel.style.borderColor = "red";
+        setTimeout(() => { panel.style.borderColor = "#5c5c5c"; }, 200);
+    }
+
+    function checkWin() {
+        let allCleared = true;
+        for (let i = 0; i <= 23; i++) {
+            let img = document.getElementById("monster" + i);
+            if (img.style.display !== "none") {
+                allCleared = false;
+                break;
+            }
+        }
+
+        if (allCleared) {
+            endGame("clear"); 
+        }
+    }
+
+    function endGame(reason) {
+      clearInterval(id); 
+      clearInterval(timerId);  
+      clearInterval(blockerJumpTimer);   
+      jumpTimers.forEach(t => clearInterval(t));
+
+      for (let i = 0; i <= 23; i++) {
+          document.getElementById("monster" + i).style.display = "none";
+      }
+      document.getElementById("blocker").style.display = "none";
+
+      if (reason === "clear") {
+          alert("恭喜！所有怪物都抓完了！最終得分：" + score);
+      } else {
+          alert("時間到！你的得分是：" + score);
+      }
+      
+      document.getElementById("btnStart").disabled = false;
+    }
+
+    function reset() {
+      clearInterval(id);
+      clearInterval(timerId);
+      clearInterval(blockerJumpTimer);
+      jumpTimers.forEach(t => clearInterval(t));
+      jumpTimers = [];
+      score = 0;
+      document.getElementById("score").innerHTML = "0";
+
+      timeLeft = 30;
+      document.getElementById("time").innerHTML = "30";
+
+      for (let i = 0; i <= 23; i++) {
+        let img = document.getElementById("monster" + i);
+        if(img) img.style.display = "none";
+      }
+      document.getElementById("blocker").style.display = "none";
+      document.getElementById("btnStart").disabled = false;
+    }
+</script>
+
+</head>
+
+<body>
+  <div class="container">
+    <div id="top" class="jumbotron mt-3 text-center">
+      <h1 id="here">怪物朋友們</h1>
+      <p style="color: #ffffff;">we want to play a game</p>
+    </div>
+
+    <div class="btn-area">
+      <input id="btnStart" type="button" value="START" class="btn btn-danger" onclick="go()">
+      <input id="btnReset"type="button" value="RESET" class="btn btn-success" onclick="reset()">
+    </div>
+
+    <div id="status"> 
+      <div id="score">0</div>
+      <div id="time">30</div>
+    </div>
+
+    <div id="panel">
+      <img id="blocker" src="./images/bad.png" onclick="hitBlocker()" alt="障礙物">
+      <!-- 這裡的 ID 保持不變 -->
+      <img id="monster0" onclick="hit(0)">
+      <img id="monster1" onclick="hit(1)">
+      <img id="monster2" onclick="hit(2)">
+      <img id="monster3" onclick="hit(3)">
+      <img id="monster4" onclick="hit(4)">
+      <img id="monster5" onclick="hit(5)">
+      <img id="monster6" onclick="hit(6)">
+      <img id="monster7" onclick="hit(7)">
+      <img id="monster8" onclick="hit(8)">
+      <img id="monster9" onclick="hit(9)">
+      <img id="monster10" onclick="hit(10)">
+      <img id="monster11" onclick="hit(11)">
+      <img id="monster12" onclick="hit(12)">
+      <img id="monster13" onclick="hit(13)">
+      <img id="monster14" onclick="hit(14)">
+      <img id="monster15" onclick="hit(15)">
+      <img id="monster16" onclick="hit(16)">
+      <img id="monster17" onclick="hit(17)">
+      <img id="monster18" onclick="hit(18)">
+      <img id="monster19" onclick="hit(19)">
+      <img id="monster20" onclick="hit(20)">
+      <img id="monster21" onclick="hit(21)">
+      <img id="monster22" onclick="hit(22)">
+      <img id="monster23" onclick="hit(23)">
+    </div>
+
+  </div>
+</body>
+</html>

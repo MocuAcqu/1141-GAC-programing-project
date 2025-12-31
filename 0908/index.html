@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文字顏色漸變</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 align="center">老師範例</h1>
+    <h1 align="center">
+		<span style="color:red">J</span>
+		<span style="color:green">a</span>
+		<span style="color:blue">v</span>
+		<span style="color:orange">a</span>
+		<span style="color:cyan">S</span>
+		<span style="color:magenta">c</span>
+		<span style="color:lime">r</span>
+		<span style="color:purple">i</span>
+		<span style="color:navy">p</span>
+		<span style="color:pink">t</span>
+	</h1>
+
+    <h1 align="center">暴力改色</h1>
+    <h1 align="center">
+		<span style="color:red">J</span>
+		<span style="color:rgb(255, 85, 0)">a</span>
+		<span style="color:rgb(255, 111, 0)">v</span>
+		<span style="color:orange">a</span>
+		<span style="color:rgb(255, 217, 0)">S</span>
+		<span style="color:rgb(251, 255, 0)">c</span>
+		<span style="color:rgb(204, 255, 0)">r</span>
+		<span style="color:rgb(94, 128, 0)">i</span>
+		<span style="color:rgb(36, 128, 0)">p</span>
+		<span style="color:rgb(37, 80, 3)">t</span>
+	</h1>
+
+    <h1 align="center">用 CSS 做漸變</h1>
+    <h1 align="center" class="gradient-text-0">JavaScript</h1>
+
+    <h1 align="center">用 CSS 做動畫漸變</h1>
+    <h1 align="center" class="gradient-text">JavaScript</h1>
+
+    <h1 align="center">用 JS 做漸變</h1>
+    <h1 align="center" id="gradient-text">
+		<span>J</span><span>a</span><span>v</span><span>a</span><span>S</span><span>c</span><span>r</span><span>i</span><span>p</span><span>t</span>
+	</h1>
+    <script>
+		document.addEventListener('DOMContentLoaded', () => {
+
+			const gradientText = document.getElementById('gradient-text');
+			const spans = gradientText.querySelectorAll('span');
+			const totalChars = spans.length;
+
+			const startColor = { r: 255, g: 100, b: 100 };
+			const endColor = { r: 100, g: 100, b: 255 };
+
+			spans.forEach((span, index) => {
+				const ratio = index / (totalChars - 1);
+
+				const r = Math.round(startColor.r + (endColor.r - startColor.r) * ratio);
+				const g = Math.round(startColor.g + (endColor.g - startColor.g) * ratio);
+				const b = Math.round(startColor.b + (endColor.b - startColor.b) * ratio);
+
+				span.style.color = `rgb(${r}, ${g}, ${b})`;
+			});
+		});
+	</script>
+</body>
+</html>

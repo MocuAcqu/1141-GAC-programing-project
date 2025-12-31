@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貓咪</title>
+</head>
+<body style="background-color: bisque;">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+    $(document).ready(function(){
+        $("a[href^='#']").on('click', function(event) {
+            var target = $(this.getAttribute('href'));
+            if( target.length ) {
+                event.preventDefault();
+                $('html, body').stop().animate({
+                    scrollTop: target.offset().top
+                }, 800); // 800毫秒的滑動效果
+            }
+        });
+    });
+    </script>
+    
+    <span id="home"></span>
+    <div style="text-align: center;"><img src="./images/cat.jpg" width="50%"></div>
+    
+    <h1 align="center" style="color: darkblue;">貓咪小天地</h1>
+    <hr>
+    <p align="left" >
+        <a href="#賓士貓"><img src="./images/mercedes.jpg" width="60px" height="60px"></a> 賓士貓<br>
+        <a href="#蘇格蘭摺耳貓"><img src="./images/scottish.jpg"  width="60px" height="60px"></a> 蘇格蘭摺耳貓<br>
+        <a href="#虎斑貓"><img src="./images/tabby.jpg"  width="60px" height="60px"></a> 虎斑貓<br>
+        <a href="https://zh.wikipedia.org/zh-tw/%E7%8C%AB" target="_blank"><img src="./images/hand.webp"  width="60px" height="60px"></a> Meow~ Meow~ Meow~
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <hr id="賓士貓">
+        <h3 align="center">賓士貓</h3>
+        <hr>
+        <p align="center">
+            <img src="./images/mercedes.jpg" width="20%">
+        </p>
+        <p style=" margin: 0 10%;">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo iure facilis accusamus dicta mollitia tempora sit dolor numquam error itaque! Ad voluptas maxime recusandae voluptates aliquam minus nulla repellat nihil nemo. Officia voluptatum quidem, ullam dolores non mollitia soluta. Sequi culpa dicta quia vel laboriosam iusto perspiciatis deserunt alias ratione nihil recusandae qui enim rerum dolorum est laborum tenetur debitis libero assumenda eligendi soluta, quam tempora obcaecati magnam. Doloremque impedit ex vero delectus ipsum veniam id facilis reprehenderit, officia voluptate optio alias molestias amet, rerum hic rem consectetur accusantium provident placeat porro veritatis, blanditiis fugit nulla dolore? Repellat, nostrum officiis eligendi sed corrupti in a blanditiis explicabo reiciendis nam magnam doloremque amet dolorem officia eaque unde itaque aut non libero facilis quidem perspiciatis veritatis recusandae obcaecati! Itaque incidunt consequatur sunt explicabo, similique voluptatibus nihil repellendus in quasi quas praesentium illum optio porro! Natus, non laudantium doloremque optio aspernatur assumenda fuga.<br><br>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi, quae? Repellat et nesciunt voluptates optio at ab earum, dicta vel cumque a ullam facilis doloribus officia. Explicabo, fugit illo placeat ex soluta molestiae, id sequi inventore omnis, laudantium totam doloribus quisquam debitis asperiores? Quidem id consequuntur ut molestias vitae perspiciatis.
+        </p>
+        <p align="right">
+            <a href="#home"><img src="./images/home.png" width="60px" height="60px"></a>
+        </p>
+        <hr id="蘇格蘭摺耳貓">
+        <h3 align="center" >蘇格蘭摺耳貓</h1>
+        <hr>
+        <p align="center">
+            <img src="./images/scottish.jpg" width="20%">
+        </p>
+        <p style="margin: 0 10%;">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo iure facilis accusamus dicta mollitia tempora sit dolor numquam error itaque! Ad voluptas maxime recusandae voluptates aliquam minus nulla repellat nihil nemo. Officia voluptatum quidem, ullam dolores non mollitia soluta. Sequi culpa dicta quia vel laboriosam iusto perspiciatis deserunt alias ratione nihil recusandae qui enim rerum dolorum est laborum tenetur debitis libero assumenda eligendi soluta, quam tempora obcaecati magnam. Doloremque impedit ex vero delectus ipsum veniam id facilis reprehenderit, officia voluptate optio alias molestias amet, rerum hic rem consectetur accusantium provident placeat porro veritatis, blanditiis fugit nulla dolore? Repellat, nostrum officiis eligendi sed corrupti in a blanditiis explicabo reiciendis nam magnam doloremque amet dolorem officia eaque unde itaque aut non libero facilis quidem perspiciatis veritatis recusandae obcaecati! Itaque incidunt consequatur sunt explicabo, similique voluptatibus nihil repellendus in quasi quas praesentium illum optio porro! Natus, non laudantium doloremque optio aspernatur assumenda fuga.<br><br>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi, quae? Repellat et nesciunt voluptates optio at ab earum, dicta vel cumque a ullam facilis doloribus officia. Explicabo, fugit illo placeat ex soluta molestiae, id sequi inventore omnis, laudantium totam doloribus quisquam debitis asperiores? Quidem id consequuntur ut molestias vitae perspiciatis.
+        </p>
+        <p align="right">
+            <a href="#home"><img src="./images/home.png" width="60px" height="60px"></a>
+        </p>
+        <hr id="虎斑貓">
+        <h3 align="center">虎斑貓</h1>
+        <hr>
+        <p align="center">
+            <img src="./images/tabby.jpg" width="20%">
+        </p>
+        <p style="margin: 0 10%;">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo iure facilis accusamus dicta mollitia tempora sit dolor numquam error itaque! Ad voluptas maxime recusandae voluptates aliquam minus nulla repellat nihil nemo. Officia voluptatum quidem, ullam dolores non mollitia soluta. Sequi culpa dicta quia vel laboriosam iusto perspiciatis deserunt alias ratione nihil recusandae qui enim rerum dolorum est laborum tenetur debitis libero assumenda eligendi soluta, quam tempora obcaecati magnam. Doloremque impedit ex vero delectus ipsum veniam id facilis reprehenderit, officia voluptate optio alias molestias amet, rerum hic rem consectetur accusantium provident placeat porro veritatis, blanditiis fugit nulla dolore? Repellat, nostrum officiis eligendi sed corrupti in a blanditiis explicabo reiciendis nam magnam doloremque amet dolorem officia eaque unde itaque aut non libero facilis quidem perspiciatis veritatis recusandae obcaecati! Itaque incidunt consequatur sunt explicabo, similique voluptatibus nihil repellendus in quasi quas praesentium illum optio porro! Natus, non laudantium doloremque optio aspernatur assumenda fuga.<br><br>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi, quae? Repellat et nesciunt voluptates optio at ab earum, dicta vel cumque a ullam facilis doloribus officia. Explicabo, fugit illo placeat ex soluta molestiae, id sequi inventore omnis, laudantium totam doloribus quisquam debitis asperiores? Quidem id consequuntur ut molestias vitae perspiciatis.
+        </p>
+        <p align="right">
+            <a href="#home"><img src="./images/home.png" width="60px" height="60px"></a>
+        </p>
+    </p>
+</body>
+</html>

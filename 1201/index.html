@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>怪物與他們的產地</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(180deg, #d7d7d7, #bcbcbc);
+      font-family: "Trebuchet MS", sans-serif;
+    }
+
+    /* ---- 標題區 ---- */
+    .jumbotron {
+      background: linear-gradient(90deg, #8b2e2e, #b84a4a);
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+      border-radius: 10px;
+      height: 200px;
+    }
+
+    h1#here {
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px black;
+    }
+
+    /* ---- 狀態列 ---- */
+    #status {
+      width: 420px;
+      height: 70px;
+      margin: 0 auto;
+      background: #ffffffdd;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    #score, #time {
+      position: absolute;
+      top: 15px;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    #score {
+      left: 20px;
+      color: #d11e1e;
+    }
+
+    #time {
+      right: 20px;
+      color: #1e3bd1;
+    }
+
+    /* ---- 遊戲場景 ---- */
+    #panel {
+      position: relative;
+      background-image: url(./images/space.png);
+      background-size: cover;
+      width: 420px;
+      height: 420px;
+      margin: 0 auto;
+      border-radius: 12px;
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.5);
+      border: 4px solid #5c5c5c;
+      margin-bottom: 10%;
+    }
+
+    #panel img {
+        position:absolute;
+        width: 50px;
+        height: 50px;
+    }
+
+    #g0:hover, #g1:hover, #g2:hover {
+      transform: scale(1.15);
+      filter: drop-shadow(0 0 4px yellow);
+    }
+
+    /* ---- 按鈕美化 ---- */
+    #btnStart, #btnReset, #btnmove {
+      width: 140px;
+      font-size: 20px;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 8px;
+      letter-spacing: 1px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      transition: 0.1s;
+    }
+
+    #btnStart:active, #btnReset:active {
+      transform: scale(0.95);
+      box-shadow: none;
+    }
+
+    .btn-area {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+  </style>
+
+  <script>
+  let monsters = [];
+  let timerMove = null;
+  let timerCount = null;
+  let score = 0;
+  let timeLeft = 30;
+  let gameRunning = false;
+
+  function go() {
+    if (gameRunning) return;
+    gameRunning = true;
+
+    score = 0;
+    timeLeft = 30;
+    document.getElementById("score").innerText = score;
+    document.getElementById("time").innerText = timeLeft;
+
+    initMonsters();
+    startMove();
+    startCountdown();
+  }
+
+
+  /* ---------------------- 初始化怪物 ---------------------- */
+  function initMonsters() {
+    monsters = [];
+
+    for (let i = 0; i <= 11; i++) {
+      let img = document.getElementById("m" + i);
+
+      monsters.push({
+        el: img,
+        x: Math.random() * 350,
+        y: Math.random() * 350,
+        dx: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? -1 : 1),
+        dy: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? -1 : 1)
+      });
+
+      img.style.left = monsters[i].x + "px";
+      img.style.top  = monsters[i].y + "px";
+      img.onclick = hit;
+    }
+  }
+
+
+  function startMove() {
+    if (timerMove) return;
+    timerMove = setInterval(updatePositions, 40);
+  }
+
+  function updatePositions() {
+    monsters.forEach(m => {
+      m.x += m.dx;
+      m.y += m.dy;
+
+      if (m.x <= 0 || m.x >= 360) m.dx = -m.dx;
+      if (m.y <= 0 || m.y >= 360) m.dy = -m.dy;
+
+      m.el.style.left = m.x + "px";
+      m.el.style.top = m.y + "px";
+    });
+  }
+
+
+  function startCountdown() {
+    timerCount = setInterval(() => {
+      timeLeft--;
+      document.getElementById("time").innerText = timeLeft;
+
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
+  }
+
+  function hit(event) {
+    if (!gameRunning) return;
+
+    score++;
+    document.getElementById("score").innerText = score;
+
+    let monster = event.target;
+    monster.style.display = "none";
+
+    setTimeout(() => {
+        monster.style.display = "block";
+        monster.style.left = Math.random() * 350 + "px";
+        monster.style.top  = Math.random() * 350 + "px";
+    }, 10000);
+}
+
+
+  function reset() {
+    clearInterval(timerMove);
+    clearInterval(timerCount);
+
+    timerMove = null;
+    timerCount = null;
+    gameRunning = false;
+
+    score = 0;
+    timeLeft = 30;
+
+    document.getElementById("score").innerText = score;
+    document.getElementById("time").innerText = timeLeft;
+  }
+
+
+  function endGame() {
+    clearInterval(timerMove);
+    clearInterval(timerCount);
+
+    timerMove = null;
+    timerCount = null;
+    gameRunning = false;
+
+    alert("時間到！你的分數是：" + score);
+  }
+
+  function move() {
+    startMove();
+  }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div id="top" class="jumbotron mt-3 text-center">
+      <h1 id="here">怪物朋友們</h1>
+      <p style="color: #ffffff;">we want to play a game</p>
+    </div>
+
+    <div class="btn-area">
+      <input id="btnStart" type="button" value="START" class="btn btn-danger" onclick="go()">
+      <input id="btnReset" type="button" value="RESET" class="btn btn-success" onclick="reset()">
+      <input id="btnmove" type="button" value="MOVE" class="btn btn-warning" onclick="move()">
+        </p>
+    </div>
+
+    <div id="status"> 
+      <div id="score">0</div>
+      <div id="time">30</div>
+    </div>
+
+    <div id="panel">
+      <img id="m0" src="./images/m0.png" onclick="hit()">
+      <img id="m1" src="./images/m1.png" onclick="hit()">
+      <img id="m2" src="./images/m2.png" onclick="hit()">
+      <img id="m3" src="./images/m3.png" onclick="hit()">
+      <img id="m4" src="./images/m4.png" onclick="hit()">
+      <img id="m5" src="./images/m5.png" onclick="hit()">
+      <img id="m6"  src="./images/m5.png" onclick="hit()">
+      <img id="m7"  src="./images/m4.png" onclick="hit()">
+      <img id="m8"  src="./images/m3.png" onclick="hit()">
+      <img id="m9"  src="./images/m2.png" onclick="hit()">
+      <img id="m10" src="./images/m1.png" onclick="hit()">
+      <img id="m11" src="./images/m0.png" onclick="hit()">
+    </div>
+  </div>
+</body>
+</html>

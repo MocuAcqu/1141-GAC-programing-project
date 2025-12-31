@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>炸彈計時器</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: white;
+    }
+
+    .jumbotron {
+      background-color: rgb(186, 45, 45);
+      height: 180px;
+    }
+    .jumbotron h1 {
+      color: azure;
+    }
+
+    .bomb-image {
+      display: block;
+      margin: 0 auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .timer-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .timer-display img {
+      vertical-align: middle;
+    }
+
+    .control-buttons {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    /* ===== 美化數字鍵盤 ===== */
+    .number-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .num-btn {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: linear-gradient(145deg, #333, #222);
+      color: #ff4444;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .num-btn:hover {
+      background: #ff4444;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px red;
+    }
+
+    .num-btn:active {
+      transform: scale(0.95);
+    }
+
+    .utility-btn {
+      background: linear-gradient(145deg, #555, #333);
+      color: #eee;
+    }
+
+    .utility-btn:hover {
+      background: #888;
+      color: white;
+    }
+  </style>
+
+  <script>
+    let n = 0;
+    let id;
+    let counting = false;
+
+    function go() {
+      let inputValue = document.getElementById("num0").value;
+      if (inputValue === "" || isNaN(inputValue) || inputValue <= 0) {
+        alert("請輸入正確的倒數秒數！");
+        return;
+      }
+
+      counting = true;
+      n = 10 * inputValue;
+      id = setInterval(counter, 100);
+      document.getElementById("btnGo").disabled = true;
+      document.getElementById("btnPause").disabled = false;
+      document.getElementById("bomb").src = "images/bomb2.jpg";
+    }
+
+    function counter() {
+      n = n - 1;
+      let t = (n / 1000).toFixed(3).toString();
+      let t0 = t[2];
+      let t1 = t[3];
+      let t2 = t[4];
+      document.getElementById("t0").src = "./images/d" + t0 + ".png";
+      document.getElementById("t1").src = "./images/d" + t1 + ".png";
+      document.getElementById("t2").src = "./images/d" + t2 + ".png";
+
+      if (n <= 0) {
+        counting = false;
+        clearInterval(id);
+        document.getElementById("bomb").src = "images/bomb3.png";
+        document.getElementById("btnPause").disabled = true;
+        document.getElementById("btnGo").disabled = false;
+      }
+    }
+
+    function reset() {
+      counting = false;
+      document.getElementById("btnGo").disabled = false;
+      document.getElementById("btnPause").disabled = true;
+      clearInterval(id);
+      n = 0;
+      document.getElementById("num0").value = "";
+      document.getElementById("bomb").src = "images/bomb1.jpg";
+      document.getElementById("t0").src = "./images/q.png";
+      document.getElementById("t1").src = "./images/q.png";
+      document.getElementById("t2").src = "./images/q.png";
+    }
+
+    function stop() {
+      if (document.getElementById("btnPause").disabled) return;
+
+      if (counting == true) {
+        clearInterval(id);
+        counting = false;
+      } else {
+        id = setInterval(counter, 100);
+        counting = true;
+      }
+    }
+
+    function addNumber(num) {
+      let input = document.getElementById("num0");
+      input.value += num;
+    }
+
+    function backspace() {
+      let input = document.getElementById("num0");
+      input.value = input.value.slice(0, -1);
+    }
+
+    function clearInput() {
+      document.getElementById("num0").value = "";
+    }
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="jumbotron mt-3">
+      <h1>Time X Time</h1>
+      <p style="color: #ffffff;">我是炸彈魔計時器</p>
+    </div>
+
+    <div class="timer-section">
+      <div class="timer-display">
+        <p>
+          <img id="t0" src="./images/q.png" width="60">
+          <img id="t1" src="./images/q.png" width="60">
+          <img src="./images/dot.png" width="10">
+          <img id="t2" src="./images/q.png" width="60">
+        </p>
+      </div>
+      <div>
+        <img src="images/bomb1.jpg" width="200px" id="bomb" class="bomb-image">
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="text-center">
+      <p>
+        倒數:
+        <input id="num0" type="text" placeholder="請輸入倒數秒數" class="form-control d-inline-block" style="width:200px;">
+        秒
+      </p>
+
+      <div class="control-buttons">
+        <input id="btnGo" type="button" value="開始" class="btn btn-danger" onclick="go()">
+        <input id="btnPause" type="button" value="暫停" class="btn btn-warning" onclick="stop()" disabled>
+        <input type="button" value="清除" class="btn btn-success" onclick="reset()">
+      </div>
+    </div>
+
+    <!-- 新數字鍵盤 -->
+    <div class="number-panel">
+      <button class="num-btn" onclick="addNumber('1')">1</button>
+      <button class="num-btn" onclick="addNumber('2')">2</button>
+      <button class="num-btn" onclick="addNumber('3')">3</button>
+
+      <button class="num-btn" onclick="addNumber('4')">4</button>
+      <button class="num-btn" onclick="addNumber('5')">5</button>
+      <button class="num-btn" onclick="addNumber('6')">6</button>
+
+      <button class="num-btn" onclick="addNumber('7')">7</button>
+      <button class="num-btn" onclick="addNumber('8')">8</button>
+      <button class="num-btn" onclick="addNumber('9')">9</button>
+
+      <button class="utility-btn num-btn" onclick="backspace()">←</button>
+      <button class="num-btn" onclick="addNumber('0')">0</button>
+      <button class="utility-btn num-btn" onclick="clearInput()">C</button>
+    </div>
+  </div>
+</body>
+</html>

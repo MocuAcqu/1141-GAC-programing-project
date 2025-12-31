@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BootStrap</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<style>
+    .jumbotron {
+        background-color: cornflowerblue;
+    }
+    .jumbotron h1{
+        color: azure;
+    }
+    .timer-display {
+        font-size: 5rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 1.5rem 0;
+        font-family: 'Roboto Mono', monospace; 
+        transition: color 0.1s ease; 
+    }
+    .bomb-image {
+        display: block;
+        margin: 1.5rem auto 0;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>
+    
+<script>
+    let n = 0;
+    let id;
+    let counting = false;
+    let initialN = 0;
+
+    function go() {
+        counting = true;
+        n = parseFloat(document.getElementById("num0").value);
+        
+        if (isNaN(n) || n <= 0) {
+            alert("請輸入一個大於 0 的數字！");
+            return;
+        }
+        initialN = n;
+
+        document.getElementById("num").innerHTML = n.toFixed(2);
+        document.getElementById("num").style.color = "hsl(120, 70%, 40%)";
+        id = setInterval(counter, 10);
+        document.getElementById("btnGo").disabled = true;
+        document.getElementById("bomb").src="images/bomb2.jpg";
+    }
+    function counter() {
+        n = n - 0.01;
+
+        if (n <= 0) {
+            n = 0;
+            counting = false;
+            clearInterval(id);
+            document.getElementById("num").innerHTML = "0.00"; 
+            document.getElementById("bomb").src="images/bomb3.png";
+            document.getElementById("num").style.color = "#dc3545"; 
+            return; 
+        } 
+
+        document.getElementById("num").innerHTML = n.toFixed(2);
+
+        let percentage = n / initialN;
+        if (percentage < 0) percentage = 0; 
+        let hue = percentage * 120; 
+        document.getElementById("num").style.color = `hsl(${hue}, 90%, 45%)`;
+    }
+    function reset() {
+        counting = false;
+        document.getElementById("btnGo").disabled = false;
+        clearInterval(id);
+        n = document.getElementById("num0").value;
+        document.getElementById("num").innerHTML = n;
+        document.getElementById("bomb").src="images/bomb1.jpg";
+        document.getElementById("num").style.color = "black";
+    }
+    function stop() {
+        if (counting == true){
+            clearInterval(id);
+            counting = false;
+            document.getElementById("num").style.color = "black";
+        } else {
+            id = setInterval(counter, 10);
+            counting = true;
+            document.getElementById("num").style.color = `hsl(${hue}, 90%, 45%)`;
+        }
+    }
+</script>
+
+<body>
+    <div class="container">
+        <div class="jumbotron" style="margin-top: 10px;">
+            <h1>TimeX</h1>
+            <p>我是炸彈魔計時器</p>
+        </div>
+        <h3 id="num" style="color: black;" class="timer-display">0</h3>
+        <hr>
+        <p>
+            <input id="num0" type="text" placeholder="請輸入倒數秒數" class="form-control">
+        </p>
+        <p>
+            <input id="btnGo" type="button" value="開始" class="btn btn-danger" onclick="go()">
+            <input type="button" value="暫停" class="btn btn-warning" onclick="stop()">
+            <input type="button" value="清除" class="btn btn-success" onclick="reset()">
+        </p>
+        <p >
+            <img src="images/bomb1.jpg" width="300px" id="bomb">
+        </p>
+    </div>
+</body>
+</html>

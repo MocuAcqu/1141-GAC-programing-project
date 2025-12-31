@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貓咪</title>
+</head>
+<body style="background-color: bisque;">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+    $(document).ready(function(){
+        $("a[href^='#']").on('click', function(event) {
+            var target = $(this.getAttribute('href'));
+            if( target.length ) {
+                event.preventDefault();
+                $('html, body').stop().animate({
+                    scrollTop: target.offset().top
+                }, 800); // 800毫秒的滑動效果
+            }
+        });
+    });
+
+    function change() {
+        document.getElementById("mewo").src = "./images/mewo_2.png";
+    }
+    function recover() {
+        document.getElementById("mewo").src = "./images/mewo_1.png";
+    }
+    </script>
+
+    <style>
+        #nav {
+            list-style-type: none; /* 移除清單預設的圓點符號 */
+            margin: 0;             /* 移除預設的外距 */
+            padding: 0;            /* 移除預設的內距 */
+            overflow: hidden;      /* 確保內容不超出背景範圍 */
+            background-color: #494949; /* 設定背景顏色為深灰色 */
+            display: flex;         /* 使用 Flexbox 佈局，輕鬆實現水平排列 */
+            justify-content: center; /* 讓所有項目在容器中置中 (可選) */
+            margin-bottom: 10px;
+        }
+
+        /* 導覽列中的連結 (a) */
+        #nav li a {
+            display: block;          /* 將連結變為區塊元素，使其可以設定 padding */
+            color: white;            /* 文字顏色為白色 */
+            text-align: center;      /* 文字置中 */
+            padding: 14px 16px;      /* 設定內距 (上下 14px, 左右 16px)，增加點擊範圍 */
+            text-decoration: none;   /* 移除連結預設的底線 */
+            transition: background-color 0.3s; /* 加入 0.3 秒的背景顏色過渡動畫 */
+            font-size: 16px;
+        }
+
+        /* 滑鼠懸停 (Hover) 在連結上時的樣式 */
+        #nav li a:hover {
+            background-color: #111; /* 背景顏色變為更深的灰色 */
+        }
+
+    </style>
+        
+    <style>
+        b {
+            color:red;
+            background-color: yellow;
+        }
+
+        h3 {
+            text-decoration: solid;
+            color:rgb(57, 30, 10);
+        }
+        
+        .ok {
+            font-size: x-large;
+            background-color: #e7e7e7;
+        }
+
+        #here {
+            color: rgb(107, 181, 215);
+        }
+    </style>
+
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #all {
+            width: 700px;
+            margin: 0 auto;
+        }
+
+        p {
+            padding: 20px;
+            font-size: large;
+            color: #494949;
+        }
+        .image-fader {
+            position: relative;
+            width: 100px;
+            height: auto;
+            margin: 40px auto;
+        }
+        .image-fader img {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .image-fader .image-top {
+            opacity: 0;
+        }
+        .image-fader:hover .image-top {
+            opacity: 1;
+        }
+        #mewo2 {
+            opacity: 0.3;
+            transition: opacity 0.4s ease-in-out;
+        }
+        #mewo2:hover {
+            opacity: 1;
+        }
+    </style>
+    <div id="all">
+        <span id="home"></span>
+
+        <ul id="nav">
+            <li><a href="#賓士貓">賓士貓</a></li>
+            <li><a href="#蘇格蘭摺耳貓">蘇格蘭摺耳貓</a></li>
+            <li><a href="#虎斑貓">虎斑貓</a></li>
+            <li><a href="https://zh.wikipedia.org/zh-tw/%E7%8C%AB" target="_blank">喵</a></li>
+        </ul>
+        
+        <div style="text-align: center;"><img src="./images/cat.jpg" width="50%"></div>
+        
+        <h1 align="center" style="color: darkblue;">貓咪<span id="here">小天地</span></h1>
+        <div class="image-fader">
+            <p>
+                <img src="./images/mewo_1.png" alt="原始貓咪圖" class="image-bottom" width="100">
+                <img src="./images/mewo_2.png" alt="滑入後貓咪圖" class="image-top" width="100">
+            </p>
+
+        </div>
+        <div>
+            <p align="center">
+                <img id="mewo2" src="./images/mewo_2.png" width="100">
+            </p>
+        </div>
+        <hr>
+        <p>
+            <b>Start: </b>Lorem ipsum, <span class="ok"> sit amet</span> consectetur adipisicing elit. Aliquid quidem at sit dolores quis consequatur molestias ducimus voluptas, sed sint repellendus hic mollitia voluptates debitis praesentium cumque animi corporis optio!Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid quidem at sit dolores quis consequatur molestias ducimus voluptas, sed sint repellendus hic <span class="ok"> voluptates debitis</span> praesentium cumque animi corporis optio!Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid quidem at sit dolores quis consequatur molestias ducimus voluptas, sed sint repellendus hic mollitia voluptates debitis praesentium cumque animi corporis optio!
+
+        </p>
+        <p>
+            <b>Lorem: </b> ipsum dolor sit, amet consectetur adipisicing elit. Sit fugiat possimus hic error quod, magni nisi nesciunt harum, adipisci veniam reiciendis labore facilis molestias dicta placeat ea quibusdam, veritatis alias.Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid quidem at sit dolores quis consequatur molestias ducimus voluptas, sed sint repellendus hic mollitia voluptates debitis praesentium cumque animi corporis optio!Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aliquid quidem at sit dolores quis consequatur molestias ducimus voluptas, sed sint repellendus hic mollitia voluptates debitis praesentium cumque animi corporis optio!
+        </p>
+    
+        <br>
+        <p align="left" >
+            <hr id="賓士貓">
+            <h3 align="center">賓士貓</h3>
+            <hr>
+            <p align="center">
+                <img src="./images/mercedes.jpg" width="20%">
+            </p>
+            <p style=" margin: 0 10%;">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo iure facilis accusamus dicta mollitia tempora sit dolor numquam error itaque! Ad voluptas maxime recusandae voluptates aliquam minus nulla repellat nihil nemo. Officia voluptatum quidem, ullam dolores non mollitia soluta. Sequi culpa dicta quia vel laboriosam iusto perspiciatis deserunt alias ratione nihil recusandae qui enim rerum dolorum est laborum tenetur debitis libero assumenda eligendi soluta, quam tempora obcaecati magnam. Doloremque impedit ex vero delectus ipsum veniam id facilis reprehenderit, officia voluptate optio alias molestias amet, rerum hic rem consectetur accusantium provident placeat porro veritatis, blanditiis fugit nulla dolore? Repellat, nostrum officiis eligendi sed corrupti in a blanditiis explicabo reiciendis nam magnam doloremque amet dolorem officia eaque unde itaque aut non libero facilis quidem perspiciatis veritatis recusandae obcaecati! Itaque incidunt consequatur sunt explicabo, similique voluptatibus nihil repellendus in quasi quas praesentium illum optio porro! Natus, non laudantium doloremque optio aspernatur assumenda fuga.<br><br>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi, quae? Repellat et nesciunt voluptates optio at ab earum, dicta vel cumque a ullam facilis doloribus officia. Explicabo, fugit illo placeat ex soluta molestiae, id sequi inventore omnis, laudantium totam doloribus quisquam debitis asperiores? Quidem id consequuntur ut molestias vitae perspiciatis.
+            </p>
+            <p align="right">
+                <a href="#home"><img src="./images/home.png" width="60px" height="60px"></a>
+            </p>
+            <hr id="蘇格蘭摺耳貓">
+            <h3 align="center" >蘇格蘭摺耳貓</h1>
+            <hr>
+            <p align="center">
+                <img src="./images/scottish.jpg" width="20%">
+            </p>
+            <p style="margin: 0 10%;">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo iure facilis accusamus dicta mollitia tempora sit dolor numquam error itaque! Ad voluptas maxime recusandae voluptates aliquam minus nulla repellat nihil nemo. Officia voluptatum quidem, ullam dolores non mollitia soluta. Sequi culpa dicta quia vel laboriosam iusto perspiciatis deserunt alias ratione nihil recusandae qui enim rerum dolorum est laborum tenetur debitis libero assumenda eligendi soluta, quam tempora obcaecati magnam. Doloremque impedit ex vero delectus ipsum veniam id facilis reprehenderit, officia voluptate optio alias molestias amet, rerum hic rem consectetur accusantium provident placeat porro veritatis, blanditiis fugit nulla dolore? Repellat, nostrum officiis eligendi sed corrupti in a blanditiis explicabo reiciendis nam magnam doloremque amet dolorem officia eaque unde itaque aut non libero facilis quidem perspiciatis veritatis recusandae obcaecati! Itaque incidunt consequatur sunt explicabo, similique voluptatibus nihil repellendus in quasi quas praesentium illum optio porro! Natus, non laudantium doloremque optio aspernatur assumenda fuga.<br><br>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi, quae? Repellat et nesciunt voluptates optio at ab earum, dicta vel cumque a ullam facilis doloribus officia. Explicabo, fugit illo placeat ex soluta molestiae, id sequi inventore omnis, laudantium totam doloribus quisquam debitis asperiores? Quidem id consequuntur ut molestias vitae perspiciatis.
+            </p>
+            <p align="right">
+                <a href="#home"><img src="./images/home.png" width="60px" height="60px"></a>
+            </p>
+            <hr id="虎斑貓">
+            <h3 align="center">虎斑貓</h1>
+            <hr>
+            <p align="center">
+                <img src="./images/tabby.jpg" width="20%">
+            </p>
+            <p style="margin: 0 10%;">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo iure facilis accusamus dicta mollitia tempora sit dolor numquam error itaque! Ad voluptas maxime recusandae voluptates aliquam minus nulla repellat nihil nemo. Officia voluptatum quidem, ullam dolores non mollitia soluta. Sequi culpa dicta quia vel laboriosam iusto perspiciatis deserunt alias ratione nihil recusandae qui enim rerum dolorum est laborum tenetur debitis libero assumenda eligendi soluta, quam tempora obcaecati magnam. Doloremque impedit ex vero delectus ipsum veniam id facilis reprehenderit, officia voluptate optio alias molestias amet, rerum hic rem consectetur accusantium provident placeat porro veritatis, blanditiis fugit nulla dolore? Repellat, nostrum officiis eligendi sed corrupti in a blanditiis explicabo reiciendis nam magnam doloremque amet dolorem officia eaque unde itaque aut non libero facilis quidem perspiciatis veritatis recusandae obcaecati! Itaque incidunt consequatur sunt explicabo, similique voluptatibus nihil repellendus in quasi quas praesentium illum optio porro! Natus, non laudantium doloremque optio aspernatur assumenda fuga.<br><br>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi, quae? Repellat et nesciunt voluptates optio at ab earum, dicta vel cumque a ullam facilis doloribus officia. Explicabo, fugit illo placeat ex soluta molestiae, id sequi inventore omnis, laudantium totam doloribus quisquam debitis asperiores? Quidem id consequuntur ut molestias vitae perspiciatis.
+            </p>
+            <p align="right">
+                <a href="#home"><img src="./images/home.png" width="60px" height="60px"></a>
+            </p>
+        </p>
+    </div>
+</body>
+</html>
