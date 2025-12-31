@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tina's Life 人生模擬器</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <audio id="bgm" loop>
+        <source src="audio/Binary Dreams.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="music-toggle" class="ui-btn" onclick="toggleMusic()">
+        <i class="fa-solid fa-volume-high"></i>
+    </button>
+
+    <div id="tutorial-modal" class="hidden">
+        <div class="tutorial-box">
+            <div class="tutorial-header">
+                <i class="fa-solid fa-circle-info"></i> SYSTEM MESSAGE
+            </div>
+            <div class="tutorial-content">
+                <h3>歡迎來到 Tina 的人生模擬器</h3>
+                <ul>
+                    <li><i class="fa-solid fa-users"></i> <strong>選擇身分：</strong> 左右切換不同角色，查看我在學生、職場、社團的不同面向。</li>
+                    <li><i class="fa-solid fa-book-open"></i> <strong>查看經歷：</strong> 點擊下方確認按鈕，閱讀詳細的技能與專案故事。</li>
+                    <li><i class="fa-solid fa-mobile-screen"></i> <strong>  聯絡資訊：</strong> 點擊右上角按鈕，查看聯絡方式與社群動態。</li>
+                    <li><i class="fa-solid fa-gamepad"></i> <strong>人生模擬：</strong> 點擊右下角 GAME START，挑戰在 15 天內存活下來！</li>
+                </ul>
+            </div>
+            <button class="neon-btn small-btn" onclick="closeTutorial()">了解 (UNDERSTOOD)</button>
+        </div>
+    </div>
+
+    <div class="grid-background"></div>
+    <div class="scanline"></div>
+
+    <button id="contact-btn" class="ui-btn">
+        <i class="fa-solid fa-address-card"></i> 聯絡資訊
+    </button>
+
+    <div id="phone-modal" class="hidden">
+        <div class="phone-case">
+            <div class="phone-screen">
+                <div class="phone-header">
+                    <span>04:15</span>
+                    <div class="camera-notch"></div>
+                    <span><i class="fa-solid fa-battery-full"></i></span>
+                </div>
+                
+                <div id="phone-content"></div>
+
+                <div class="phone-nav">
+                    <button onclick="switchPhoneTab('contact')"><i class="fa-solid fa-user"></i></button>
+                    <button onclick="switchPhoneTab('ig')"><i class="fa-brands fa-instagram"></i></button>
+                    <button onclick="switchPhoneTab('github')"><i class="fa-brands fa-github"></i></button>
+                </div>
+                <button id="close-phone">✕</button>
+            </div>
+        </div>
+    </div>
+
+    <nav id="sidebar" class="sidebar collapsed">
+        <button id="sidebar-toggle" class="sidebar-btn toggle-btn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="nav-menu">
+            <button onclick="quickNav('home')" class="sidebar-btn" title="我的角色">
+                <i class="fa-solid fa-gamepad"></i>
+                <span class="link-text">我的角色</span>
+            </button>
+
+            <button onclick="quickNav('student')" class="sidebar-btn" title="學生資訊">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span class="link-text">學生資訊</span>
+            </button>
+
+            <button onclick="quickNav('worker')" class="sidebar-btn" title="工作經歷">
+                <i class="fa-solid fa-briefcase"></i>
+                <span class="link-text">工作經歷</span>
+            </button>
+
+            <button onclick="quickNav('club')" class="sidebar-btn" title="社團經歷">
+                <i class="fa-solid fa-users"></i>
+                <span class="link-text">社團經歷</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="history-modal" class="hidden">
+        <div class="history-panel">
+            <h3 id="history-title">DATA LOG</h3>
+            <div id="history-content" class="history-list">
+            </div>
+            <button onclick="closeHistory()" class="ui-btn small" style="margin-top: 20px;">關閉 (CLOSE)</button>
+        </div>
+    </div>
+
+    <main id="app">
+        <section id="intro-screen" class="active-screen" onclick="enterCharacterSelect()">
+            <div class="intro-content">
+                <div class="typing-container">
+                    <p class="typewriter-text">你好，我是來自台灣師範大學的邱鈺婷</p>
+                    <p class="fade-in-text">歡迎進入我的世界，這裡會帶你了解我的經歷</p>
+                </div>
+                <div class="press-start-blink">
+                    [ 點擊畫面開始 ]
+                </div>
+            </div>
+        </section>
+
+        <section id="home-screen" class="hidden">
+            <div class="bg-text-animation">
+                <div class="scroll-row row-left">
+                    <span>PORTFOLIO EXPERIENCE RESUME SKILLS PORTFOLIO EXPERIENCE RESUME SKILLS</span>
+                    <span>PORTFOLIO EXPERIENCE RESUME SKILLS PORTFOLIO EXPERIENCE RESUME SKILLS</span>
+                </div>
+                <div class="scroll-row row-right">
+                    <span>DESIGN CODING LEADERSHIP CREATIVITY DESIGN CODING LEADERSHIP CREATIVITY</span>
+                    <span>DESIGN CODING LEADERSHIP CREATIVITY DESIGN CODING LEADERSHIP CREATIVITY</span>
+                </div>
+                <div class="scroll-row row-left">
+                    <span>NTNU STUDENT WORKER CLUB-LEADER NTNU STUDENT WORKER CLUB-LEADER</span>
+                    <span>NTNU STUDENT WORKER CLUB-LEADER NTNU STUDENT WORKER CLUB-LEADER</span>
+                </div>
+            </div>
+
+            <div class="character-container">
+                <button class="arrow-btn" id="prev-char"><i class="fa-solid fa-caret-left"></i></button>
+                
+                <div class="character-card">
+                    <div class="char-visual">
+                        <div id="char-img-placeholder"></div>
+                    </div>
+                    <div class="char-info">
+                        <h2 id="char-name">PLAYER 1</h2>
+                        <h3 id="char-role">學生</h3>
+                        <p id="char-desc">勤奮好學，探索未知的領域。</p>
+                        
+                    </div>
+                </div>
+
+                <button class="arrow-btn" id="next-char"><i class="fa-solid fa-caret-right"></i></button>
+            </div>
+
+            <button id="go-detail" class="neon-btn">
+                <i class="fa-solid fa-check"></i> 確認身分 / 查看經歷
+            </button>
+        </section>
+
+        <div id="game-start" class="game-start-wrapper hidden">
+            <button id="game-start-btn" class="corner-btn">
+                <i class="fa-solid fa-gamepad"></i> GAME START
+            </button>
+        </div>
+
+        <section id="detail-screen" class="hidden">
+            <button id="back-home" class="arrow-btn back-btn"><i class="fa-solid fa-caret-left"></i> 返回角色</button>
+            
+            <div id="detail-content">
+                <div id="view-student" class="view-section hidden">
+                    
+                    <div class="id-card-container">
+                        <div class="student-id-card">
+                            <div class="card-header-band">
+                                <span class="uni-name">NTNU 臺灣師範大學</span>
+                                <span class="card-chip"><i class="fa-solid fa-microchip"></i></span>
+                            </div>
+                            
+                            <div class="card-body-flex">
+                                <div class="id-photo-frame">
+                                    <div class="actual-photo" style="background-image: url('images/student.jpg');"></div>
+                                </div>
+                                <div class="id-details">
+                                    <div class="detail-row">
+                                        <label>NAME</label>
+                                        <span>邱鈺婷 (TINA)</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <label>DEPT</label>
+                                        <span>科技應用與人力資源學系 TAHRD</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <label>ID NO.</label>
+                                        <span>41271124H</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <label>STATUS</label>
+                                        <span class="status-active">在學中 大三生<i class="fa-solid fa-circle-check"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="digital-stamp">APPROVED</div>
+                        </div>
+                    </div>
+
+                    <div class="academic-record">
+                        
+                        <div class="record-column">
+                            <h3 class="record-title"><i class="fa-solid fa-chart-line"></i> 成績表現 (Stats)</h3>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-box clickable" onclick="showHistory('gpa')">
+                                    <div class="stat-label">平均 GPA <i class="fa-solid fa-circle-info"></i></div>
+                                    <div class="stat-value">4.29 <span class="stat-max">/ 4.3</span></div>
+                                    <div class="stat-bar"><div style="width: 99%"></div></div>
+                                </div>
+
+                                <div class="stat-box clickable" onclick="showHistory('rank')">
+                                    <div class="stat-label">系級排名 (Rank) <i class="fa-solid fa-circle-info"></i></div>
+                                    <div class="stat-value">Top 1<span class="stat-max"> %</span></div>
+                                    <div class="stat-desc">點擊查看歷年排名</div>
+                                </div>
+                            </div>
+
+
+                            <div class="legendary-achievement">
+                                <div class="icon-box"><i class="fa-solid fa-crown"></i></div>
+                                <div class="achieve-text">
+                                    <strong>書卷獎霸榜</strong>
+                                    <span>連續 4 學期獲得本系書券獎 (Presidential Award)</span>
+                                </div>
+                            </div>
+
+                            <div class="sub-stats">
+                                <div class="sub-stat-item">
+                                    <i class="fa-solid fa-scroll"></i> 已修學分: <span class="highlight-text">110 (含大三上) / 128</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="record-column">
+                            <h3 class="record-title"><i class="fa-solid fa-trophy"></i> 特殊表現 (Performance)</h3>
+                            <div class="quest-list">
+                                
+                                <div class="quest-item">
+                                    <div class="quest-icon"><i class="fa-solid fa-database"></i></div>
+                                    <div class="quest-info">
+                                        <h4>2025年教育部大數據分析計畫</h4>
+                                        <p>學生專題競賽【優等】 / 分析金門縣政府數位平台數據，讓數據變策略</p>
+                                    </div>
+                                </div>
+
+                                <div class="quest-item">
+                                    <div class="quest-icon"><i class="fa-solid fa-medal"></i></div>
+                                    <div class="quest-info">
+                                        <h4>113學年度 STAR 星辰獎學金</h4>
+                                        <p>跨領域多元發展 / 領導合作、專業知識與體能表現之肯定</p>
+                                    </div>
+                                </div>
+
+                                <div class="quest-item">
+                                    <div class="quest-icon"><i class="fa-solid fa-vr-cardboard"></i></div>
+                                    <div class="quest-info">
+                                        <h4>數位學習理論與實務專題競賽</h4>
+                                        <p>第一名 / 專題【甜品專管】是一款結合 AR 技術的人資桌遊</p>
+                                    </div>
+                                </div>
+
+                                <div class="quest-item">
+                                    <div class="quest-icon"><i class="fa-solid fa-dumbbell"></i></div>
+                                    <div class="quest-info">
+                                        <h4>112學年度五育獎學金體育獎</h4>
+                                        <p>跨領域表現 / 過去有跆拳道、射擊等多元運動經驗</p>
+                                    </div>
+                                </div>
+
+                                <div class="quest-item">
+                                    <div class="quest-icon"><i class="fa-solid fa-stopwatch-20"></i></div>
+                                    <div class="quest-info">
+                                        <h4>112學年度女乙4x100接力賽第四名</h4>
+                                        <p>臺師大全校運動會 / 團隊合作競速</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="project-section">
+                            <h3 class="record-title"><i class="fa-solid fa-laptop-code"></i> 專案開發 (Projects)</h3>
+                            
+                            <div class="project-grid">
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">Dec 2025</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>TKP 交易買賣租購統合平台</h4>
+                                    <div class="tech-stack">
+                                        <span>MongoDB</span>
+                                        <span>Flask</span>
+                                    </div>
+                                    <p>Trade can be possibal.善用 Database 的CRUD概念，做出買方與賣方交易連結、聯絡的管理平台。</p>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">Dec 2025</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>智慧貨幣收集家</h4>
+                                    <div class="tech-stack">
+                                        <span>Expo + React Native</span>
+                                        <span>MySGL</span>
+                                        <span>Flask</span>
+                                    </div>
+                                    <p>結合影像辨識、即時匯率換算、集幣冊等功能，讓使用者可以實現行動學習，認識與應用各國貨幣。</p>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">May 2025</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>釣魚信件偵測擴充工具</h4>
+                                    <div class="tech-stack">
+                                        <span>Chrome Ext</span>
+                                        <span>Flask</span>
+                                        <span>Autoencoder</span>
+                                    </div>
+                                    <p>偵測 Gmail 信件是否存在釣魚連結與異常標題，透過 Flask 啟動 Autoencoder 模型，判斷連結是否已存在或可能是釣魚連結。</p>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">May 2025</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>英文寫作分析器 (AI Agent)</h4>
+                                    <div class="tech-stack">
+                                        <span>Gemini LLM</span>
+                                        <span>Supabase</span>
+                                        <span>Flask</span>
+                                    </div>
+                                    <p>透過 Gemini 模型對於使用者的英文文本產出完整評價與建議報告書 (PDF)，結合 Supabase 紀錄歷史資料。</p>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">Dec 2024</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>虛擬圖書管理員 (Virtual Librarian)</h4>
+                                    <div class="tech-stack">
+                                        <span>Unity</span>
+                                        <span>Hugging Face</span>
+                                        <span>爬蟲</span>
+                                    </div>
+                                    <p>結合LLM可互動的虛擬人物，根據對話推薦書籍，即時爬取博客來排行榜，並根據輸入做出對應動作。</p>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">May 2025</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>WorldKC 點字學習器</h4>
+                                    <div class="tech-stack">
+                                        <span>App Inventor</span>
+                                        <span>Android</span>
+                                    </div>
+                                    <p>讓普通人也能方便學習盲人點字工具。功能包含：點字翻譯、字典查閱、點字測驗。</p>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">Dec 2024</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>華麗抽獎網站</h4>
+                                    <div class="tech-stack">
+                                        <span>Web Dev</span>
+                                        <span>Database</span>
+                                        <span>Animation</span>
+                                    </div>
+                                    <p>多元且有儀式感的抽獎工具 (轉盤、骰子)。即時收集現場用戶資料並進行互動抽獎。</p>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="p-header">
+                                        <span class="p-date">Dec 2024</span>
+                                        <div class="p-status"></div>
+                                    </div>
+                                    <h4>Tahrder 科技人留言板</h4>
+                                    <div class="tech-stack">
+                                        <span>Full Stack</span>
+                                        <span>社群互動</span>
+                                    </div>
+                                    <p>可登入留言的開放交流版，使用者可以在不同的討論空間留言、按讚，分享想法。</p>
+                                </div>
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div id="view-club" class="view-section hidden">
+                    <h1 class="record-title"><i class="fa-solid fa-users"></i> 社團大冒險 (Adventure Logs)</h1>
+                    
+                    <div class="club-interface">
+                        
+                        <div class="club-sidebar">
+                            <div class="club-tab active" onclick="switchClub('petit', this)">
+                                <i class="fa-solid fa-cookie-bite"></i>
+                                <span>派緹甜點社</span>
+                            </div>
+                            <div class="club-tab" onclick="switchClub('gaoping', this)">
+                                <i class="fa-solid fa-users-rays"></i>
+                                <span>高屏鄉友會</span>
+                            </div>
+                            <div class="club-tab" onclick="switchClub('dorm', this)">
+                                <i class="fa-solid fa-building-user"></i>
+                                <span>學七舍宿委會</span>
+                            </div>
+                        </div>
+
+                        <div class="club-main-area">
+                            
+                            <div class="quest-selector">
+                                <h3 id="selected-club-title">QUEST LIST</h3>
+                                <div id="quest-list-container">
+                                </div>
+                            </div>
+
+                            <div class="mission-scroll-container">
+                                <div id="mission-content" class="mission-content">
+                                    <div class="placeholder-text">
+                                        SELECT A GUILD & QUEST TO VIEW DETAILS...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-worker" class="view-section hidden">
+                    <h1 class="record-title"><i class="fa-solid fa-briefcase"></i> 職涯數據庫 (Career Logs)</h1>
+                    <div class="job-quick-list">
+                        <button class="job-btn" data-id="job4" onclick="selectJob('job4')">影片後製剪輯工讀生</button>
+                        <button class="job-btn" data-id="job5" onclick="selectJob('job5')">餐廳外場服務生</button>
+                        <button class="job-btn" data-id="job1" onclick="selectJob('job1')">社群小編</button>
+                        <button class="job-btn" data-id="job2" onclick="selectJob('job2')">AI 實習生</button>
+                        <button class="job-btn" data-id="job3" onclick="selectJob('job3')">AI Team 外包</button>
+                    </div>
+                    <div class="timeline-wrapper">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-node" data-id="job4" onclick="selectJob('job4')">
+                            <div class="t-dot"></div>
+                            <div class="t-date">Oct 2023</div>
+                        </div>
+
+                        <div class="timeline-node" data-id="job5" onclick="selectJob('job5')">
+                            <div class="t-dot"></div>
+                            <div class="t-date">July 2024</div>
+                        </div>
+
+                        <div class="timeline-node" data-id="job1" onclick="selectJob('job1')">
+                            <div class="t-dot"></div>
+                            <div class="t-date">May 2025</div>
+                        </div>
+
+                        <div class="timeline-node" data-id="job2" onclick="selectJob('job2')">
+                            <div class="t-dot"></div>
+                            <div class="t-date">Jun 2025</div>
+                        </div>
+
+                        <div class="timeline-node" data-id="job3" onclick="selectJob('job3')">
+                            <div class="t-dot"></div>
+                            <div class="t-date">Sep 2025</div>
+                        </div>
+                    </div>
+
+                    <div class="job-terminal-container">
+                        <div class="terminal-header">
+                            <span class="blink-dot"></span> SYSTEM_LOG_VIEWER_V2.0
+                        </div>
+                        <div id="job-detail-content" class="terminal-body">
+                            <div class="placeholder-text">
+                                > INITIALIZING CONNECTION...<br>
+                                > PLEASE SELECT A TIMELINE NODE.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-tina" class="view-section hidden">
+                    <h1 class="glitch">很高興遇見你</h1>
+                    <p>希望你也能在你的人生，被大家看見。</p>
+                    <img src="images/332309.jpg" style="width:300px"> 
+                </div>
+            </div>
+        </section>
+
+        <section id="game-screen" class="hidden">
+            <div class="sim-container">
+                
+                <div class="sim-header">
+                    <div class="day-counter">DAY <span id="sim-day">1</span> / 15</div>
+                    <div class="role-badge" id="sim-role-name">ROLE</div>
+                </div>
+
+                <div class="sim-stats">
+                    <div class="sim-stat-row">
+                        <i class="fa-solid fa-heart" style="color:#ff4d4d;"></i>
+                        <div class="sim-bar-bg"><div id="bar-health" class="sim-bar-fill" style="width: 100%; background:#ff4d4d;"></div></div>
+                        <span id="val-health">100</span>
+                    </div>
+                    <div class="sim-stat-row">
+                        <i class="fa-solid fa-burger" style="color:#ff9f43;"></i>
+                        <div class="sim-bar-bg"><div id="bar-hunger" class="sim-bar-fill" style="width: 100%; background:#ff9f43;"></div></div>
+                        <span id="val-hunger">100</span>
+                    </div>
+                    <div class="sim-stat-row">
+                        <i class="fa-solid fa-face-smile" style="color:#54a0ff;"></i>
+                        <div class="sim-bar-bg"><div id="bar-mood" class="sim-bar-fill" style="width: 100%; background:#54a0ff;"></div></div>
+                        <span id="val-mood">100</span>
+                    </div>
+                    <div class="sim-stat-row">
+                        <i class="fa-solid fa-coins" style="color:#feca57;"></i>
+                        <div class="sim-bar-bg"><div id="bar-wealth" class="sim-bar-fill" style="width: 0%; background:#feca57;"></div></div>
+                        <span id="val-wealth">0</span>
+                    </div>
+                </div>
+
+                <div class="sim-log-window">
+                    <div id="sim-log-content">
+                        > 歡迎來到人生模擬器。<br>
+                        > 請選擇你的每日行動...
+                    </div>
+                </div>
+
+                <div class="sim-actions">
+                    <button class="action-btn" onclick="simAction('work')">
+                        <i class="fa-solid fa-briefcase"></i><br>工作/學習<br><small>+財富 -情緒 -飽食 -生命</small>
+                    </button>
+                    <button class="action-btn" onclick="simAction('eat')">
+                        <i class="fa-solid fa-utensils"></i><br>吃大餐<br><small>-財富 +飽食 +生命</small>
+                    </button>
+                    <button class="action-btn" onclick="simAction('play')">
+                        <i class="fa-solid fa-gamepad"></i><br>娛樂放鬆<br><small>-財富 +情緒 -飽食</small>
+                    </button>
+                    <button class="action-btn" onclick="simAction('rest')">
+                        <i class="fa-solid fa-bed"></i><br>休息睡覺<br><small>+生命 -飽食 +情緒</small>
+                    </button>
+                </div>
+
+                <div id="sim-end-controls" class="hidden">
+                    <h2 id="sim-result-title">結局</h2>
+                    <p id="sim-result-desc">...</p>
+                    <button onclick="quitGame()" class="neon-btn">返回首頁</button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
